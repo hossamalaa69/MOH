@@ -25,7 +25,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".players.VideoPlayerActivity" />
+        <activity android:name=".players.VideoPlayerActivity" android:label="Video Player" android:noHistory="true" />
         <activity
             android:name=".ui.ChatActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />

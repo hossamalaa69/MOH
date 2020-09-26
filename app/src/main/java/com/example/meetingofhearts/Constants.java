@@ -1,4 +1,4 @@
-package com.example.meetingofhearts.ui;
+package com.example.meetingofhearts;
 
 import com.example.meetingofhearts.Entities.User;
 

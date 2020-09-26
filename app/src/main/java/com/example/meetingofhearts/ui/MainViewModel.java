@@ -18,11 +18,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersViewModel extends AndroidViewModel {
+public class MainViewModel extends AndroidViewModel {
 
     MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
 
-    public UsersViewModel(@NonNull Application application) {
+    public MainViewModel(@NonNull Application application) {
         super(application);
 
         List<User> userList = new ArrayList<>();

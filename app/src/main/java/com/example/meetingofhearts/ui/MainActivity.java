@@ -1,7 +1,6 @@
 package com.example.meetingofhearts.ui;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,31 +13,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.example.meetingofhearts.Authentication.ui.LoginActivity;
-import com.example.meetingofhearts.Entities.Interest;
+import com.example.meetingofhearts.Constants;
 import com.example.meetingofhearts.Entities.User;
 import com.example.meetingofhearts.R;
 import com.example.meetingofhearts.adapters.UserAdapter;
@@ -54,12 +43,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ybs.countrypicker.CountryPicker;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     RecyclerView users_recycler;
     UserAdapter userAdapter;
-    UsersViewModel usersViewModel;
+    MainViewModel mainViewModel;
 
     List<Boolean> filters = new ArrayList<>(Arrays.asList(false, false, false, false));
 
@@ -101,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initLiveData() {
-        usersViewModel = new ViewModelProvider(this).get(UsersViewModel.class);
-        usersViewModel.loadAllUsers();
-        usersViewModel.loadAllUsers().observe(this, users -> {
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        mainViewModel.loadAllUsers();
+        mainViewModel.loadAllUsers().observe(this, users -> {
             Constants.fullUsers.clear();
             Constants.fullUsers.addAll(users);
             userAdapter.setUserList(users, currentUser.getID(), currentUser.getUid());

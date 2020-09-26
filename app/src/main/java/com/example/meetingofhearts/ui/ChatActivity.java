@@ -61,6 +61,7 @@ public class ChatActivity extends AppCompatActivity{
     static String guest_user_id;
     static long last_date;
 
+    User guest_user = null;
     ProgressBar chat_progress;
     TextView empty_chat;
     RecyclerView recycler_messages;
@@ -182,19 +183,30 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void initToolbar() {
+        TextView textView = getSupportActionBar().getCustomView().findViewById(R.id.guest_name);
+        CircleImageView circleImageView = getSupportActionBar().getCustomView().findViewById(R.id.guest_img);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(User.class.getSimpleName());
         databaseReference.child(guest_user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                TextView textView = getSupportActionBar().getCustomView().findViewById(R.id.guest_name);
-                CircleImageView circleImageView = getSupportActionBar().getCustomView().findViewById(R.id.guest_img);
                 User user = snapshot.getValue(User.class);
                 textView.setText(user.getUser_name());
                 Glide.with(ChatActivity.this).load(user.getImageUrl()).placeholder(R.drawable.ic_user_placeholder).into(circleImageView);
+                guest_user = user;
                 databaseReference.removeEventListener(this);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        circleImageView.setOnClickListener(view -> {
+            if(guest_user != null){
+                Intent intent = new Intent(ChatActivity.this, ProfileActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user_serialized",guest_user);
+                bundle.putString("visit", "yes");
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }
