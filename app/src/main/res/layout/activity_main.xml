@@ -1,0 +1,89 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity"
+    android:background="@color/colorWhite">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/toolbar"
+                app:title="Home"
+                app:titleTextAppearance="@style/TextAppearance.AppCompat.Large"
+                app:theme="@style/ThemeToolbar"
+                app:titleTextColor="@color/colorWhite"
+                android:background="@color/colorBlue"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="10dp"
+                android:id="@+id/users_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                />
+
+        </LinearLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_gravity="start"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:background="@color/colorWhite"
+            app:itemTextColor="@color/colorDark"
+            app:headerLayout="@layout/header_navigation"
+            app:itemIconTint="@color/colorBlue"
+            app:menu="@menu/navigation_menu" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+
+    <ProgressBar
+        android:id="@+id/main_progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminateDrawable="@drawable/custom_progress_bar_blue"
+        android:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_filter_users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_filter_white"
+        android:backgroundTint="@color/colorBlue"
+        app:borderWidth="0dp"
+        android:onClick="filterResults"
+        android:layout_margin="10dp" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_chat_white"
+        android:backgroundTint="@color/colorBlue"
+        app:borderWidth="0dp"
+        android:layout_margin="10dp"
+        android:onClick="openChat"
+        />
+
+</RelativeLayout>

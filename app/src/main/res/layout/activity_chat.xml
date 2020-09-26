@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".ui.ChatActivity">
+
+    <TextView
+        android:id="@+id/empty_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Empty Chat! Send Your First Message"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:textColor="@color/colorGray"
+        android:visibility="visible"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_messages"
+        android:layout_margin="5dp"
+        android:layout_alignParentTop="true"
+        android:stackFromBottom="true"
+        android:layout_above="@id/input_layout"
+        android:layout_width="match_parent"
+        tools:listitem="@layout/rv_item_message"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/input_layout"
+        android:background="@color/colorGray2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_video_blue"
+            android:layout_marginEnd="3dp"
+            android:clickable="true"
+            android:onClick="sendVideo" />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_image_blue"
+            android:clickable="true"
+            android:onClick="sendImage" />
+        <EditText
+            android:id="@+id/msg_input"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:maxLines="5"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:backgroundTint="@color/colorBlue"
+            android:inputType="textMultiLine"
+            android:textColor="@color/colorWhite"
+            android:textSize="17sp"
+            />
+        <ImageView
+            android:id="@+id/send_msg_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/send_icons"
+            android:clickable="true"
+            android:visibility="visible"
+            android:src="@drawable/send_icons"
+            android:onClick="sendMessage" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/chat_progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminateDrawable="@drawable/custom_progress_bar_red"
+        android:visibility="visible" />
+
+</RelativeLayout>

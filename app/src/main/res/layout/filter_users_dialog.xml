@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/colorBlue">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBlue"
+        >
+        <TextView
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Match By:"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:id="@+id/txt_filter"
+            android:textColor="@color/colorWhite" />
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/txt_filter"
+            android:layout_marginStart="5dp"
+            android:id="@+id/check_buttons_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/checkbox_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textSize="22sp"
+                android:buttonTint="@color/colorGray2"
+                android:textColor="@color/colorWhite"/>
+            <CheckBox
+                android:layout_marginTop="3dp"
+                android:id="@+id/checkbox_country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Country"
+                android:textSize="22sp"
+                android:buttonTint="@color/colorGray2"
+                android:textColor="@color/colorWhite"/>
+            <CheckBox
+                android:layout_marginTop="3dp"
+                android:id="@+id/checkbox_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Round Age"
+                android:textSize="22sp"
+                android:buttonTint="@color/colorGray2"
+                android:textColor="@color/colorWhite"/>
+            <CheckBox
+                android:layout_marginTop="3dp"
+                android:id="@+id/checkbox_interests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Interests"
+                android:textSize="22sp"
+                android:buttonTint="@color/colorGray2"
+                android:textColor="@color/colorWhite"/>
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_done_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/check_buttons_layout"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_done_blue"
+            android:backgroundTint="@color/colorWhite"
+            app:borderWidth="0dp"
+            android:layout_margin="10dp" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/gradient_blue_white">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_moh"/>
+    <TextView
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorDark"
+        android:text="@string/app_name"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/welcome_user"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorDark"
+        android:text="Welcome, Hossam Alaa!"
+        android:maxLines="1"
+        android:textSize="17sp"
+        />
+
+</LinearLayout>
