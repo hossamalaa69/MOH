@@ -4,16 +4,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -22,6 +33,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abedelazizshe.lightcompressorlibrary.CompressionListener;
+import com.abedelazizshe.lightcompressorlibrary.VideoCompressor;
+import com.abedelazizshe.lightcompressorlibrary.VideoQuality;
 import com.bumptech.glide.Glide;
 import com.example.meetingofhearts.Entities.Conversation;
 import com.example.meetingofhearts.Entities.Message;
@@ -43,8 +57,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -76,6 +96,8 @@ public class ChatActivity extends AppCompatActivity{
     private ChildEventListener mMessagesChildListener;
     private Query mMessagesQuery;
 
+    ProgressBar upload_progress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +112,8 @@ public class ChatActivity extends AppCompatActivity{
         initRecycler();
 
         initDatabase();
+
+        getPermissions();
     }
 
     private void initDatabase() {
@@ -132,6 +156,10 @@ public class ChatActivity extends AppCompatActivity{
         recycler_messages = findViewById(R.id.recycler_messages);
         send_msg_icon = findViewById(R.id.send_msg_icon);
         msg_input = findViewById(R.id.msg_input);
+        upload_progress = findViewById(R.id.upload_progress);
+        Drawable progressDrawable = upload_progress.getProgressDrawable().mutate();
+        progressDrawable.setColorFilter(Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN);
+        upload_progress.setProgressDrawable(progressDrawable);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -341,30 +369,91 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void UploadVideoToCloud() {
-            chat_progress.setVisibility(View.VISIBLE);
-            String extension = getFileExtension(selectedVideo);
-            StorageReference reference = FirebaseStorage.getInstance().getReference("videos").child(System.currentTimeMillis() +
+        chat_progress.setVisibility(View.VISIBLE);
+
+        String inPath = getRealPathFromURI(this, selectedVideo);
+        File Mainfile = new File(Environment.getExternalStorageDirectory() + "/moh/");
+        Mainfile.mkdirs();
+        String outPath = Environment.getExternalStorageDirectory() + "/moh/" + selectedVideo.getLastPathSegment() + "."+getFileExtension(selectedVideo);
+        Uri oldUri = selectedVideo;
+
+        VideoCompressor.start(inPath, outPath, new CompressionListener() {
+            @Override
+            public void onStart() {
+                // Compression start
+                chat_progress.setVisibility(View.GONE);
+                upload_progress.setVisibility(View.VISIBLE);
+//                Toast.makeText(ChatActivity.this, "Starting Compression", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess() {
+                chat_progress.setVisibility(View.VISIBLE);
+                upload_progress.setVisibility(View.GONE);
+                File file = new File(outPath);
+                selectedVideo = FileProvider.getUriForFile(ChatActivity.this, "com.example.meetingofhearts", file);
+                uploadVid();
+            }
+
+            @Override
+            public void onFailure(String failureMessage) {
+                // On Failure
+                Toast.makeText(ChatActivity.this, "Failed Compression" + failureMessage, Toast.LENGTH_SHORT).show();
+                chat_progress.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onProgress(float v) {
+                // Update UI with progress value
+                ChatActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        upload_progress.setProgress((int)v);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled() {
+                // On Cancelled
+                Toast.makeText(ChatActivity.this, "Cancelled Compression", Toast.LENGTH_SHORT).show();
+            }
+        }, VideoQuality.MEDIUM, false, false);
+        //uploadVid();
+    }
+
+    private void uploadVid() {
+        String extension = getFileExtension(selectedVideo);
+        StorageReference reference = FirebaseStorage.getInstance().getReference("videos").child(System.currentTimeMillis() +
                     "." + extension);
 
-            UploadTask uploadTask = reference.putFile(selectedVideo);
-            uploadTask.continueWithTask(task -> {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return reference.getDownloadUrl();
-            }).addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    Toast.makeText(ChatActivity.this, "Uploaded Successfully ..!", Toast.LENGTH_SHORT).show();
-                    Uri downloadUri = task.getResult();
-                    String videoUrl = downloadUri.toString();
-                    Message message = new Message("", "", new Date().getTime(), conversation_id, user_id, "", videoUrl);
-                    insertMessageDb(message);
-                }else{
-                    Toast.makeText(ChatActivity.this, "Failed Uploading Image ..!", Toast.LENGTH_SHORT).show();
-                    chat_progress.setVisibility(View.GONE);
-                }
-            });
+        UploadTask uploadTask = reference.putFile(selectedVideo);
+        uploadTask.continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+            return reference.getDownloadUrl();
+        }).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Toast.makeText(ChatActivity.this, "Uploaded Successfully ..!", Toast.LENGTH_SHORT).show();
+                Uri downloadUri = task.getResult();
+                String videoUrl = downloadUri.toString();
+                Message message = new Message("", "", new Date().getTime(), conversation_id, user_id, "", videoUrl);
+                insertMessageDb(message);
+            }else{
+                Toast.makeText(ChatActivity.this, "Failed Uploading Video ..!", Toast.LENGTH_SHORT).show();
+                chat_progress.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getPermissions() {
+        ActivityCompat.requestPermissions(ChatActivity.this
+                , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
     }
 
 
+    public String getRealPathFromURI(Context context, Uri uri) {
+       return FileUtils.getPath(context, uri);
+    }
 }

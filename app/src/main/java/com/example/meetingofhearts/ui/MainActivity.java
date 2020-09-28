@@ -6,13 +6,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
+        getPermissions();
         checkIfNotLogged();
         if(!isFinishing()){
             checkUserProfile();
@@ -301,6 +305,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void openChat(View view) {
         Toast.makeText(this, "Open Chat", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, VideoPlayerActivity.class));
     }
+    private void getPermissions() {
+        ActivityCompat.requestPermissions(MainActivity.this
+                , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+    }
+
 }
