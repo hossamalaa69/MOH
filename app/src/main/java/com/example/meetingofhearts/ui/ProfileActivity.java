@@ -33,6 +33,10 @@ import com.example.meetingofhearts.R;
 import com.example.meetingofhearts.adapters.ProfileInterestsAdapter;
 import com.example.meetingofhearts.players.ImageViewerActivity;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -70,6 +74,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Uri selectedImage = null;
     private final List<Interest> allInterestsList = new ArrayList<>();
 
+    InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +86,49 @@ public class ProfileActivity extends AppCompatActivity {
         initViews();
 
         getUserData();
+
+        showAdInterstitial();
+    }
+
+    private void showAdInterstitial() {
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.test_interstitial));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Toast.makeText(ProfileActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                mInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                Toast.makeText(ProfileActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the interstitial ad is closed.
+            }
+        });
     }
 
     private void getUserData() {

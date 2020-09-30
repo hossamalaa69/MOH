@@ -2,7 +2,7 @@ package com.example.meetingofhearts.Entities;
 
 import java.util.Map;
 
-public class Conversation {
+public class Conversation implements Comparable<Conversation> {
     String ID;
     String last_message;
     long last_message_date;
@@ -48,5 +48,13 @@ public class Conversation {
 
     public void setUsers(Map<String, String> users) {
         this.users = users;
+    }
+
+    @Override
+    public int compareTo(Conversation conversation) {
+        if(this.last_message_date < conversation.getLast_message_date())
+            return 1;
+        else
+            return -1;
     }
 }

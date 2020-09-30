@@ -11,20 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -42,8 +37,13 @@ import com.example.meetingofhearts.Entities.Message;
 import com.example.meetingofhearts.Entities.User;
 import com.example.meetingofhearts.R;
 import com.example.meetingofhearts.adapters.MessagesAdapter;
+import com.example.meetingofhearts.players.FileUtils;
 import com.example.meetingofhearts.players.ImageViewerActivity;
 import com.example.meetingofhearts.players.VideoPlayerActivity;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -57,14 +57,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -98,6 +93,8 @@ public class ChatActivity extends AppCompatActivity{
 
     ProgressBar upload_progress;
 
+    InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +111,49 @@ public class ChatActivity extends AppCompatActivity{
         initDatabase();
 
         getPermissions();
+
+        showAdInterstitial();
+    }
+
+    private void showAdInterstitial() {
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.test_interstitial));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Toast.makeText(ChatActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                mInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                Toast.makeText(ChatActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the interstitial ad is closed.
+            }
+        });
     }
 
     private void initDatabase() {

@@ -2,8 +2,11 @@ package com.example.meetingofhearts.Authentication.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -54,10 +57,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         checkIfLogged();
         initGoogleOptions();
         initViews();
 
+    }
+
+    private void getPermissions() {
+        ActivityCompat.requestPermissions(LoginActivity.this
+                , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
     }
 
     private void initGoogleOptions() {
@@ -122,15 +132,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 signin_progress.setVisibility(View.GONE);
                 if(task.isSuccessful()){
-                    //if(firebaseAuth.getCurrentUser().isEmailVerified()) {
+                    if(firebaseAuth.getCurrentUser().isEmailVerified()) {
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
                         finish();
-                    //}else{
-                    //    Toast.makeText(LoginActivity.this, "Please, Verify Your Email", Toast.LENGTH_SHORT).show();
-                    //}
+                    }else{
+                        Toast.makeText(LoginActivity.this, "Please, Verify Your Email", Toast.LENGTH_SHORT).show();
+                    }
                 }else{
-                    Toast.makeText(LoginActivity.this, "Error ...! \n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Error ...! \nPlease, Enter your password correctly", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -36,6 +36,14 @@ import com.example.meetingofhearts.R;
 import com.example.meetingofhearts.adapters.UserAdapter;
 import com.example.meetingofhearts.players.VideoPlayerActivity;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -69,16 +77,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     List<Boolean> filters = new ArrayList<>(Arrays.asList(false, false, false, false));
 
+    private InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initAds();
         initViews();
         getPermissions();
         checkIfNotLogged();
         if(!isFinishing()){
             checkUserProfile();
         }
+    }
+
+
+    private void initAds() {
+        MobileAds.initialize(this, initializationStatus -> {
+            Toast.makeText(MainActivity.this, "Ads Initialized", Toast.LENGTH_SHORT).show();
+            showAdInterstitial();
+        });
+    }
+    private void showAdInterstitial() {
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.test_interstitial));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Toast.makeText(MainActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                mInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                Toast.makeText(MainActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the interstitial ad is closed.
+            }
+        });
     }
 
     private void initRecyclers() {
@@ -304,8 +364,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void openChat(View view) {
-        Toast.makeText(this, "Open Chat", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, ConversationsActivity.class);
+        i.putExtra("current_id", currentUser.getID());
+        startActivity(i);
     }
+
     private void getPermissions() {
         ActivityCompat.requestPermissions(MainActivity.this
                 , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE

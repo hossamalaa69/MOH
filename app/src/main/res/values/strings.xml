@@ -26,4 +26,10 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
+    <string name="app_id">ca-app-pub-8666925109546629~2441446490</string>
+    <string name="unit_interstitial">ca-app-pub-8666925109546629/4694901284</string>
+    <string name="unit_banner">ca-app-pub-8666925109546629/8137476367</string>
+    <string name="test_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="test_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+
 </resources>

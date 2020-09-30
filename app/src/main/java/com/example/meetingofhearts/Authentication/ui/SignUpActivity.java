@@ -2,8 +2,11 @@ package com.example.meetingofhearts.Authentication.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,8 +40,16 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+
         checkIfLogged();
         initViews();
+    }
+
+    private void getPermissions() {
+        ActivityCompat.requestPermissions(SignUpActivity.this
+                , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
     }
 
     private void checkIfLogged() {

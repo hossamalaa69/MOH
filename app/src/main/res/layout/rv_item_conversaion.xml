@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp"
+    android:clickable="true"
+    android:layout_margin="3dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="0dp"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/transparent_blue2">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="2dp"
+    android:background="@color/transparent_blue2">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_img"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_user_placeholder"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/colorBlue"
+        />
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/user_name_cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dexter Morgan"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:textColor="@color/colorWhite"/>
+        <TextView
+            android:id="@+id/message_cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="Hello, Dexter Morgan, I just like to meet you in person and talk about our next homicide in Miami, florida "
+            android:layout_marginTop="5dp"
+            android:maxLines="2"
+            android:textSize="16sp"
+            android:textColor="@color/colorWhite3"/>
+        <TextView
+            android:id="@+id/date_cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="20-11-2020 At 18:40"
+            android:textSize="11sp"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/colorWhite2"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+</androidx.cardview.widget.CardView>

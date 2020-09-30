@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "363430938809",
+    "firebase_url": "https://meeting-of-hearts.firebaseio.com",
+    "project_id": "meeting-of-hearts",
+    "storage_bucket": "meeting-of-hearts.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:363430938809:android:0658fe60f0bc211174f368",
+        "android_client_info": {
+          "package_name": "com.example.meetingofhearts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "363430938809-vel9lqqg2gfoenq1591be5eoi0obtp0m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetingofhearts",
+            "certificate_hash": "a588d6b1663fb068c2d8153b2d0b9d5fc7ab32d0"
+          }
+        },
+        {
+          "client_id": "363430938809-gt4j1o1cm7i6lvoiicvi5cgibn45ivlq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYWtrZFO9Czi4U4RyJY8qgjzjE1TyYPRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "363430938809-gt4j1o1cm7i6lvoiicvi5cgibn45ivlq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-8666925109546629~2441446490"
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package com.example.meetingofhearts.ui;
+package com.example.meetingofhearts.players;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;

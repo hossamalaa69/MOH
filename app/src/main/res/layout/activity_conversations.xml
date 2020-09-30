@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.ConversationsActivity"
+    android:background="@color/colorWhite"
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_conversations"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        tools:listitem="@layout/rv_item_conversaion"
+        android:layout_above="@id/adView_banner_conv"
+        >
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <ProgressBar
+        android:id="@+id/progress_conversations"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible"
+        android:indeterminateDrawable="@drawable/custom_progress_bar_blue"
+        />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView_banner_conv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/test_banner">
+    </com.google.android.gms.ads.AdView>
+
+</RelativeLayout>
