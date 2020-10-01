@@ -15,6 +15,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_moh_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
 
         <meta-data
@@ -22,6 +23,7 @@
             android:value="@string/app_id"/>
 
         <activity
+            android:hardwareAccelerated="true"
             android:name=".ui.ConversationsActivity"
             android:label="Chat Log" />
 
@@ -40,6 +42,7 @@
             android:label="Video Player"
             android:noHistory="true" />
         <activity
+            android:hardwareAccelerated="true"
             android:name=".ui.ChatActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
@@ -47,6 +50,7 @@
             android:label="Picture"
             android:noHistory="true" />
         <activity
+            android:hardwareAccelerated="true"
             android:name=".ui.ProfileActivity"
             android:label="Profile" />
         <activity
@@ -61,6 +65,7 @@
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".ui.MainActivity"
+            android:hardwareAccelerated="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
