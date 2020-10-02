@@ -22,4 +22,9 @@
         <!-- color of the menu overflow icon -->
         <item name="android:textColorSecondary">@color/colorWhite</item>
     </style>
+
+    <style name="CustomCheckbox02" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/check_box_selector</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>

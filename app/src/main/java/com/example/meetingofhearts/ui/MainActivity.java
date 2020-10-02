@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showAdInterstitial();
         });
     }
-    private void showAdInterstitial() {
 
+    private void showAdInterstitial() {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getResources().getString(R.string.test_interstitial));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
