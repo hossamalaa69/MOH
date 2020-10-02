@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "363430938809-4gpbe1v5tjrub82r92jjvqqdmf7dcrgf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetingofhearts",
+            "certificate_hash": "ff3f4351abca4cb2a2d91de4b2b740086ad4a95f"
+          }
+        },
+        {
           "client_id": "363430938809-vel9lqqg2gfoenq1591be5eoi0obtp0m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

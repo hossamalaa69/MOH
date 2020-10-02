@@ -54,6 +54,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.startapp.sdk.adsbase.AutoInterstitialPreferences;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,13 +93,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             checkUserProfile();
             initAds();
             getPermissions();
+            initStartAppAds();
         }
     }
 
+    private void initStartAppAds() {
+        StartAppSDK.init(this, getString(R.string.startapp_id), false);
+        StartAppAd.disableSplash();
+        StartAppAd.enableAutoInterstitial();
+        StartAppAd.setAutoInterstitialPreferences(
+                new AutoInterstitialPreferences().setSecondsBetweenAds(120));
+    }
 
     private void initAds() {
         MobileAds.initialize(this, initializationStatus -> {
-            Toast.makeText(MainActivity.this, "Ads Initialized", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "Ads Initialized", Toast.LENGTH_SHORT).show();
             showAdInterstitial();
         });
     }
@@ -109,14 +120,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Toast.makeText(MainActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
                 mInterstitialAd.show();
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
-                Toast.makeText(MainActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override

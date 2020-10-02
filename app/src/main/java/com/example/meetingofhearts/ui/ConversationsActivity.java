@@ -61,13 +61,13 @@ public class ConversationsActivity extends AppCompatActivity {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Toast.makeText(ConversationsActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(ConversationsActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
-                Toast.makeText(ConversationsActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
+               // Toast.makeText(ConversationsActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
 
             }
 
@@ -75,27 +75,27 @@ public class ConversationsActivity extends AppCompatActivity {
             public void onAdOpened() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
-                Toast.makeText(ConversationsActivity.this, "Ad Opened", Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(ConversationsActivity.this, "Ad Opened", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
-                Toast.makeText(ConversationsActivity.this, "Ad Clicked", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(ConversationsActivity.this, "Ad Clicked", Toast.LENGTH_SHORT).show();
             }
 
 
             @Override
             public void onAdLeftApplication() {
                 // Code to be executed when the user has left the app.
-                Toast.makeText(ConversationsActivity.this, "Ad Left App", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ConversationsActivity.this, "Ad Left App", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAdClosed() {
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
-                Toast.makeText(ConversationsActivity.this, "Ad Closed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ConversationsActivity.this, "Ad Closed", Toast.LENGTH_SHORT).show();
             }
         });
 

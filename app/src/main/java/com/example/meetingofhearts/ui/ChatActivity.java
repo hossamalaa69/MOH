@@ -124,14 +124,14 @@ public class ChatActivity extends AppCompatActivity{
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Toast.makeText(ChatActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ChatActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
                 mInterstitialAd.show();
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
-                Toast.makeText(ChatActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(ChatActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -184,8 +184,6 @@ public class ChatActivity extends AppCompatActivity{
             mMessagesQuery.addChildEventListener(mMessagesChildListener);
         }
     }
-
-
 
 
     private void initViews() {

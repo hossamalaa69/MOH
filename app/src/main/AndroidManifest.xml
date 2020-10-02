@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:allowBackup="true"
@@ -18,9 +19,15 @@
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
 
+        <meta-data android:name="com.startapp.sdk.APPLICATION_ID"
+            android:value="@string/startapp_id" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/app_id"/>
+
+        <meta-data android:name="com.startapp.sdk.RETURN_ADS_ENABLED"
+            android:value="false" />
 
         <activity
             android:hardwareAccelerated="true"
@@ -44,7 +51,7 @@
         <activity
             android:hardwareAccelerated="true"
             android:name=".ui.ChatActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".players.ImageViewerActivity"
             android:label="Picture"

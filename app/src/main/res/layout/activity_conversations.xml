@@ -18,7 +18,7 @@
         android:orientation="vertical"
         android:visibility="visible"
         tools:listitem="@layout/rv_item_conversaion"
-        android:layout_above="@id/adView_banner_conv"
+        android:layout_above="@id/startAppBanner"
         >
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -32,12 +32,19 @@
         android:indeterminateDrawable="@drawable/custom_progress_bar_blue"
         />
 
+    <com.startapp.sdk.ads.banner.Banner
+        android:id="@+id/startAppBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView_banner_conv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
         ads:adSize="BANNER"
         ads:adUnitId="@string/test_banner">
     </com.google.android.gms.ads.AdView>

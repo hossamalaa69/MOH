@@ -12,10 +12,12 @@
         android:id="@+id/empty_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Empty Chat! Send Your First Message"
+        android:text="          Empty Chat! \nSend Your First Message!"
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
-        android:textColor="@color/colorGray"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite"
         android:visibility="visible"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_messages"
@@ -24,7 +26,6 @@
         android:stackFromBottom="true"
         android:layout_above="@id/input_layout"
         android:layout_width="match_parent"
-        tools:listitem="@layout/rv_item_message"
         android:layout_height="wrap_content"/>
 
 

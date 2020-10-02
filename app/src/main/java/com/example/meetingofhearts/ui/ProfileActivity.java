@@ -99,14 +99,14 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Toast.makeText(ProfileActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfileActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
                 mInterstitialAd.show();
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
-                Toast.makeText(ProfileActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(ProfileActivity.this, "Failed Loading \n" + adError.toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
