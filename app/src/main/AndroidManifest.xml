@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.meetingofhearts">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sufnatech.meetingofhearts">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,12 +32,12 @@
 
         <activity
             android:hardwareAccelerated="true"
-            android:name=".ui.ConversationsActivity"
+            android:name="com.sufnatech.meetingofhearts.ui.ConversationsActivity"
             android:label="Chat Log" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.meetingofhearts"
+            android:authorities="com.sufnatech.meetingofhearts"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -45,33 +46,33 @@
         </provider>
 
         <activity
-            android:name=".players.VideoPlayerActivity"
+            android:name="com.sufnatech.meetingofhearts.players.VideoPlayerActivity"
             android:label="Video Player"
             android:noHistory="true" />
         <activity
             android:hardwareAccelerated="true"
-            android:name=".ui.ChatActivity"
+            android:name="com.sufnatech.meetingofhearts.ui.ChatActivity"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
-            android:name=".players.ImageViewerActivity"
+            android:name="com.sufnatech.meetingofhearts.players.ImageViewerActivity"
             android:label="Picture"
             android:noHistory="true" />
         <activity
             android:hardwareAccelerated="true"
-            android:name=".ui.ProfileActivity"
+            android:name="com.sufnatech.meetingofhearts.ui.ProfileActivity"
             android:label="Profile" />
         <activity
-            android:name=".Authentication.ui.SignUpActivity"
+            android:name="com.sufnatech.meetingofhearts.Authentication.ui.SignUpActivity"
             android:label="Sign Up"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".Authentication.ui.LoginActivity"
+            android:name="com.sufnatech.meetingofhearts.Authentication.ui.LoginActivity"
             android:label="Login"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.sufnatech.meetingofhearts.ui.MainActivity"
             android:hardwareAccelerated="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
