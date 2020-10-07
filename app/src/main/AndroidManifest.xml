@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sufnatech.meetingofhearts">
+    package="com.oleksandr.weshare">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,14 +24,16 @@
             android:value="@string/app_id" />
 
         <activity
-            android:name=".ui.ConversationsActivity"
+            android:name="com.oleksandr.weshare.ui.ConversationsActivity"
             android:hardwareAccelerated="true"
             android:label="Chat Log"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.sufnatech.meetingofhearts"
+            android:authorities="com.oleksandr.weshare"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -40,42 +42,41 @@
         </provider>
 
         <activity
-            android:name=".players.VideoPlayerActivity"
+            android:name="com.oleksandr.weshare.players.VideoPlayerActivity"
             android:label="Video Player"
             android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.ChatActivity"
+            android:name="com.oleksandr.weshare.ui.ChatActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize"
             />
         <activity
-            android:name=".players.ImageViewerActivity"
+            android:name="com.oleksandr.weshare.players.ImageViewerActivity"
             android:label="Picture"
             android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.ProfileActivity"
+            android:name="com.oleksandr.weshare.ui.ProfileActivity"
             android:hardwareAccelerated="true"
             android:label="Profile"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Authentication.ui.SignUpActivity"
+            android:name="com.oleksandr.weshare.Authentication.ui.SignUpActivity"
             android:label="Sign Up"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".Authentication.ui.LoginActivity"
+            android:name="com.oleksandr.weshare.Authentication.ui.LoginActivity"
             android:label="Login"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.oleksandr.weshare.ui.MainActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -87,7 +88,7 @@
         </activity>
 
         <service
-            android:name=".NotificationService"
+            android:name="com.oleksandr.weshare.NotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -2,12 +2,13 @@
 <androidx.appcompat.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize"
     android:theme="@style/AppTheme"
     android:gravity="start"
+    app:contentInsetStart="0dp"
     android:background="@color/colorPrimary">
         <RelativeLayout
             android:layout_marginEnd="5dp"
@@ -19,15 +20,15 @@
 
             <ImageView
                 android:id="@+id/arrow_back"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:src="@drawable/ic_arrow_back_white" />
+                android:src="@drawable/ic_baseline_arrow_back_20" />
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/guest_img"
                 android:clickable="true"

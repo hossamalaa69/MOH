@@ -8,25 +8,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:363430938809:android:8a175d8d2ef388e874f368",
+        "mobilesdk_app_id": "1:363430938809:android:f68adfcc31b7b5ff74f368",
         "android_client_info": {
-          "package_name": "com.sufnatech.meetingofhearts"
+          "package_name": "com.oleksandr.weshare"
         }
       },
       "oauth_client": [
         {
-          "client_id": "363430938809-g8fkqfs07unjdt3b01icpggbd6a02r4d.apps.googleusercontent.com",
+          "client_id": "363430938809-fscnh3vpr4n2bhs0nj58kbq3log3u5nr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sufnatech.meetingofhearts",
+            "package_name": "com.oleksandr.weshare",
             "certificate_hash": "ff3f4351abca4cb2a2d91de4b2b740086ad4a95f"
           }
         },
         {
-          "client_id": "363430938809-869t953d3rgteot81efd5u9qs1ja8638.apps.googleusercontent.com",
+          "client_id": "363430938809-h0jctad1549r0ir6jlm4843g3mumq5he.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sufnatech.meetingofhearts",
+            "package_name": "com.oleksandr.weshare",
             "certificate_hash": "a588d6b1663fb068c2d8153b2d0b9d5fc7ab32d0"
           }
         },

@@ -14,7 +14,7 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "com.sufnatech.meetingofhearts"
+        applicationId "com.oleksandr.weshare"
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
