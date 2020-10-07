@@ -49,7 +49,7 @@ public class ConversationsActivity extends AppCompatActivity {
 
         initDatabase();
 
-        //showAdBanner();
+        showAdBanner();
     }
 
     private void showAdBanner() {

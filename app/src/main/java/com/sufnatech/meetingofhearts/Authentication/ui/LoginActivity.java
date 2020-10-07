@@ -1,6 +1,7 @@
 package com.sufnatech.meetingofhearts.Authentication.ui;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -8,6 +9,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -17,6 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.Query;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.sufnatech.meetingofhearts.Constants;
 import com.sufnatech.meetingofhearts.Entities.User;
 import com.sufnatech.meetingofhearts.ui.MainActivity;
 import com.sufnatech.meetingofhearts.R;
@@ -57,10 +64,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        checkReceived();
         checkIfLogged();
         initGoogleOptions();
         initViews();
 
+    }
+
+    private void checkReceived() {
+        String id = getIntent().getStringExtra("id");
+        if(id != null) {
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference("User/"+id+"/status");
+            db.setValue("Offline");
+            getSharedPreferences("LoginPref", 0).edit().putString("id", "").apply();
+        }
     }
 
     private void getPermissions() {
@@ -68,8 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                 , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
                         , Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
     }
-
-
 
     private void checkIfLogged() {
         firebaseAuth = FirebaseAuth.getInstance();
@@ -231,11 +246,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void openHome() {
+
         signin_progress.setVisibility(View.GONE);
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
         finish();
     }
+
 
     public void forgetPassword(View view) {
         if(emailInput.getText().toString().isEmpty() || !isValidEmail(emailInput.getText().toString())) {
@@ -284,5 +301,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        finish();
     }
 }

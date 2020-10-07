@@ -35,4 +35,10 @@
     <string name="test_interstitial">ca-app-pub-7091885653434303/6935488607</string>
 
     <string name="startapp_id">209924832</string>
+
+
+    <string name="notifiy_id">notification_id</string>
+    <string name="notification_url">https://fcm.googleapis.com/fcm/send</string>
+    <string name="server_key">AAAAVJ4sCLk:APA91bGdHwcZ_GK_ygRb10h-qEOHzElxrbhvelU5REpK0pAokNECe-B43ZHrRiMyPkTNd9LMC7ilKCZEWq2QXC6NyLRov90lncXUyFx5as2jaI_Brhg2J_Y7bHfInTwgTAiKlqzVmwlg</string>
+
 </resources>

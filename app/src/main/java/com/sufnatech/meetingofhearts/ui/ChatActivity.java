@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,7 +33,15 @@ import android.widget.Toast;
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener;
 import com.abedelazizshe.lightcompressorlibrary.VideoCompressor;
 import com.abedelazizshe.lightcompressorlibrary.VideoQuality;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.sufnatech.meetingofhearts.Constants;
 import com.sufnatech.meetingofhearts.Entities.Conversation;
 import com.sufnatech.meetingofhearts.Entities.Message;
 import com.sufnatech.meetingofhearts.Entities.User;
@@ -57,9 +67,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -77,6 +92,7 @@ public class ChatActivity extends AppCompatActivity{
     static long last_date;
 
     User guest_user = null;
+    User currentUser = null;
     ProgressBar chat_progress;
     TextView empty_chat;
     RecyclerView recycler_messages;
@@ -95,6 +111,9 @@ public class ChatActivity extends AppCompatActivity{
 
     InterstitialAd mInterstitialAd;
 
+    private RequestQueue mRequestQueue;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +131,19 @@ public class ChatActivity extends AppCompatActivity{
 
         getPermissions();
 
-        //showAdInterstitial();
+        showAdInterstitial();
+    }
+
+    @Override
+    protected void onResume() {
+        Constants.isChatOpened = true;
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Constants.isChatOpened = false;
+        super.onPause();
     }
 
     private void showAdInterstitial() {
@@ -207,7 +238,7 @@ public class ChatActivity extends AppCompatActivity{
 
     private void receiveParams() {
         conversation_id = getIntent().getStringExtra("id");
-        //Constants.currentConversation = conversation_id;
+        Constants.currentConversation = conversation_id;
         user_id = getIntent().getStringExtra("current_user_id");
         guest_user_id = getIntent().getStringExtra("guest_user_id");
         last_date = getIntent().getLongExtra("last_date", 0);
@@ -250,15 +281,37 @@ public class ChatActivity extends AppCompatActivity{
 
     private void initToolbar() {
         TextView textView = getSupportActionBar().getCustomView().findViewById(R.id.guest_name);
+        TextView user_status = getSupportActionBar().getCustomView().findViewById(R.id.user_status);
         CircleImageView circleImageView = getSupportActionBar().getCustomView().findViewById(R.id.guest_img);
+        ImageView arrow_back = getSupportActionBar().getCustomView().findViewById(R.id.arrow_back);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(User.class.getSimpleName());
         databaseReference.child(guest_user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
+
                 textView.setText(user.getUser_name());
+
                 Glide.with(ChatActivity.this).load(user.getImageUrl()).placeholder(R.drawable.ic_user_placeholder).into(circleImageView);
+
+                String status = user.getStatus();
+                GradientDrawable statusCircle = (GradientDrawable) user_status.getBackground();
+                int color = ContextCompat.getColor(ChatActivity.this, R.color.colorGray4);
+                if(status != null && status.equals("Online"))
+                    color = ContextCompat.getColor(ChatActivity.this, R.color.colorGreen);
+                statusCircle.setColor(color);
+
                 guest_user = user;
+                //databaseReference.removeEventListener(this);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        databaseReference.child(user_id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                currentUser = snapshot.getValue(User.class);
                 databaseReference.removeEventListener(this);
             }
             @Override
@@ -275,6 +328,7 @@ public class ChatActivity extends AppCompatActivity{
                 startActivity(intent);
             }
         });
+        arrow_back.setOnClickListener(view -> onBackPressed());
     }
 
     public void sendMessage(View view) {
@@ -291,8 +345,60 @@ public class ChatActivity extends AppCompatActivity{
         updateConversation(message);
         mMessagesDatabaseReference.child(id).setValue(message).addOnCompleteListener(task -> {
             if(task.isSuccessful())
-                Toast.makeText(ChatActivity.this, "Send", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivity.this, "Sent", Toast.LENGTH_SHORT).show();
+                sendNotification(message);
         });
+    }
+
+    public void sendNotification(Message message) {
+
+        String title = currentUser.getUser_name();
+        String body = message.getMessage_text();
+        if(body.isEmpty())
+            body = "(Attachment)";
+
+        mRequestQueue = Volley.newRequestQueue(this);
+        JSONObject mainObj = new JSONObject();
+        try {
+            mainObj.put("to", "/topics/" + guest_user_id);
+
+            JSONObject notifyObj = new JSONObject();
+            notifyObj.put("title", title);
+            notifyObj.put("body", body);
+
+            JSONObject dataObj = new JSONObject();
+            dataObj.put("current_user_id", guest_user_id);
+            dataObj.put("guest_user_id", currentUser.getID());
+            dataObj.put("last_date", "" + message.getMsg_date());
+            dataObj.put("id", conversation_id);
+            dataObj.put("imageUrl", currentUser.getImageUrl());
+
+            mainObj.put("notification", notifyObj);
+            mainObj.put("data", dataObj);
+
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST
+                    , getString(R.string.notification_url), mainObj
+                    , response -> {
+                //Toast.makeText(ChatActivity.this, "Notification Sent Successfully", Toast.LENGTH_SHORT).show();
+            }
+                    , (VolleyError error) -> {
+                //Toast.makeText(ChatActivity.this, "Notification Failed Sending", Toast.LENGTH_SHORT).show();
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("content-type", "application/json");
+                    headers.put("authorization", "key="+getString(R.string.server_key));
+                    return headers;
+                }
+            };
+
+            mRequestQueue.add(jsonObjectRequest);
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateConversation(Message message) {
@@ -410,53 +516,61 @@ public class ChatActivity extends AppCompatActivity{
         chat_progress.setVisibility(View.VISIBLE);
 
         String inPath = getRealPathFromURI(this, selectedVideo);
-        File Mainfile = new File(Environment.getExternalStorageDirectory() + "/moh/");
-        Mainfile.mkdirs();
-        String outPath = Environment.getExternalStorageDirectory() + "/moh/" + selectedVideo.getLastPathSegment() + "."+getFileExtension(selectedVideo);
-        Uri oldUri = selectedVideo;
+        File originalFile = new File(inPath);
+        int file_size = Integer.parseInt(String.valueOf(originalFile.length()/1024));
+        if(file_size > 15000 && file_size <= 100000) {
+            File Mainfile = new File(Environment.getExternalStorageDirectory() + "/moh/");
+            Mainfile.mkdirs();
+            String outPath = Environment.getExternalStorageDirectory() + "/moh/" + selectedVideo.getLastPathSegment() + "." + getFileExtension(selectedVideo);
+            Uri oldUri = selectedVideo;
 
-        VideoCompressor.start(inPath, outPath, new CompressionListener() {
-            @Override
-            public void onStart() {
-                // Compression start
-                chat_progress.setVisibility(View.GONE);
-                upload_progress.setVisibility(View.VISIBLE);
+            VideoCompressor.start(inPath, outPath, new CompressionListener() {
+                @Override
+                public void onStart() {
+                    // Compression start
+                    chat_progress.setVisibility(View.GONE);
+                    upload_progress.setVisibility(View.VISIBLE);
 //                Toast.makeText(ChatActivity.this, "Starting Compression", Toast.LENGTH_SHORT).show();
-            }
+                }
 
-            @Override
-            public void onSuccess() {
-                chat_progress.setVisibility(View.VISIBLE);
-                upload_progress.setVisibility(View.GONE);
-                File file = new File(outPath);
-                selectedVideo = FileProvider.getUriForFile(ChatActivity.this, "com.example.meetingofhearts", file);
-                uploadVid();
-            }
+                @Override
+                public void onSuccess() {
+                    chat_progress.setVisibility(View.VISIBLE);
+                    upload_progress.setVisibility(View.GONE);
+                    File file = new File(outPath);
+                    selectedVideo = FileProvider.getUriForFile(ChatActivity.this, getPackageName(), file);
+                    uploadVid();
+                }
 
-            @Override
-            public void onFailure(String failureMessage) {
-                // On Failure
-                Toast.makeText(ChatActivity.this, "Failed Compression" + failureMessage, Toast.LENGTH_SHORT).show();
-                chat_progress.setVisibility(View.GONE);
-            }
+                @Override
+                public void onFailure(String failureMessage) {
+                    // On Failure
+                    Toast.makeText(ChatActivity.this, "Failed Compression" + failureMessage, Toast.LENGTH_SHORT).show();
+                    chat_progress.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onProgress(float v) {
-                // Update UI with progress value
-                ChatActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        upload_progress.setProgress((int)v);
-                    }
-                });
-            }
+                @Override
+                public void onProgress(float v) {
+                    // Update UI with progress value
+                    ChatActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            upload_progress.setProgress((int) v);
+                        }
+                    });
+                }
 
-            @Override
-            public void onCancelled() {
-                // On Cancelled
-                Toast.makeText(ChatActivity.this, "Cancelled Compression", Toast.LENGTH_SHORT).show();
-            }
-        }, VideoQuality.MEDIUM, false, false);
-        //uploadVid();
+                @Override
+                public void onCancelled() {
+                    // On Cancelled
+                    Toast.makeText(ChatActivity.this, "Cancelled Compression", Toast.LENGTH_SHORT).show();
+                }
+            }, VideoQuality.HIGH, false, false);
+        }else if(file_size <= 15000){
+            uploadVid();
+        }else{
+            Toast.makeText(this, "File size is very large to be uploaded", Toast.LENGTH_SHORT).show();
+            chat_progress.setVisibility(View.GONE);
+        }
     }
 
     private void uploadVid() {

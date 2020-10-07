@@ -66,9 +66,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserVH> implem
         User user = userList.get(position);
 
         holder.user_name.setText(user.getUser_name());
-        holder.user_email.setText(user.getEmail());
-        holder.user_phone.setText(user.getPhone());
-        holder.user_age.setText("" + user.getAge()+" Years");
+        if(user.getAge() > 0)
+            holder.user_age.setText("" + user.getAge()+" Years");
+        else
+            holder.user_age.setText("");
+
         holder.user_nationality.setText(user.getNationality());
         holder.user_gender.setText(user.getGender());
 
@@ -160,9 +162,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserVH> implem
         private static final String TAG = "UserVH";
 
         ConstraintLayout expandableLayout;
-        TextView user_name, user_email, user_phone, user_age, user_nationality, user_gender;
+        TextView user_name, user_age, user_nationality, user_gender;
         CircleImageView user_image;
-        ImageView drop_button, image_phone, image_email, ic_start_chat;
+        ImageView drop_button, ic_start_chat;
 
         RelativeLayout main_view;
 
@@ -174,15 +176,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserVH> implem
 
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
             user_name = itemView.findViewById(R.id.user_name);
-            user_email = itemView.findViewById(R.id.user_email);
-            user_phone = itemView.findViewById(R.id.user_phone);
             user_age = itemView.findViewById(R.id.user_age);
             user_nationality = itemView.findViewById(R.id.user_nationality);
             user_gender = itemView.findViewById(R.id.user_gender);
             user_image = itemView.findViewById(R.id.user_image);
             drop_button = itemView.findViewById(R.id.drop_button);
-            image_email = itemView.findViewById(R.id.image_email);
-            image_phone = itemView.findViewById(R.id.image_phone);
             ic_start_chat = itemView.findViewById(R.id.ic_start_chat);
             main_view = itemView.findViewById(R.id.main_view);
             interests_recycler = itemView.findViewById(R.id.interests_recycler);
@@ -202,20 +200,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserVH> implem
                 bundle.putString("visit", "yes");
                 intent.putExtras(bundle);
                 context.startActivity(intent);
-            });
-
-            image_phone.setOnClickListener(view -> {
-                Intent i = new Intent(Intent.ACTION_DIAL);
-                i.setData(Uri.parse("tel:"+user_phone.getText().toString()));
-                context.startActivity(i);
-            });
-
-            image_email.setOnClickListener(view -> {
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setData(Uri.parse("mailto:"+user_email.getText().toString()));
-                if (intent.resolveActivity(context.getPackageManager()) != null) {
-                    context.startActivity(intent);
-                }
             });
 
             ic_start_chat.setOnClickListener(view -> {

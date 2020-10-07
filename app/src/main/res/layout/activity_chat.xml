@@ -58,6 +58,8 @@
             android:src="@drawable/ic_video_blue"
             android:layout_marginEnd="3dp"
             android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:onClick="sendVideo" />
         <ImageView
             android:layout_width="35dp"
@@ -66,7 +68,8 @@
             android:background="@color/transparent"
             android:src="@drawable/ic_image_blue"
             android:clickable="true"
-            android:onClick="sendImage" />
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"            android:onClick="sendImage" />
         <EditText
             android:id="@+id/msg_input"
             android:layout_width="0dp"

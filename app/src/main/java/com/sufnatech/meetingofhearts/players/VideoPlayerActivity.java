@@ -2,11 +2,13 @@ package com.sufnatech.meetingofhearts.players;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -28,6 +30,14 @@ public class VideoPlayerActivity extends AppCompatActivity {
             vid_url = intent.getStringExtra("video_url");
 
         videoview = (VideoView) findViewById(R.id.videoView);
+        videoview.setMediaController(new MediaController(this){
+            public boolean dispatchKeyEvent(KeyEvent event)
+            {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP)
+                    ((Activity) getContext()).finish();
+                return super.dispatchKeyEvent(event);
+            }
+        });
         pDialog = new ProgressDialog(this);
         pDialog.setTitle("Video Stream");
         pDialog.setMessage("Loading...");
@@ -53,5 +63,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
         videoview.setOnCompletionListener(mp -> finish());
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

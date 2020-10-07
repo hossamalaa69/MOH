@@ -17,6 +17,7 @@ public class User implements Serializable {
     private String gender;
     private int age;
     private String nationality;
+    private String status;
     private Map<String, String> interests;
     private Map<String, String> messaging;
 
@@ -35,11 +36,12 @@ public class User implements Serializable {
         this.nationality = "";
         this.interests = new HashMap<>();
         this.messaging = new HashMap<>();
+        status = "";
         isExpanded = false;
     }
 
     public User(String ID, String uid, String user_name, String email, String phone, String imageUrl
-            , String gender, int age, String nationality, Map<String,String> interests, Map<String, String> messaging) {
+            , String gender, int age, String nationality, Map<String,String> interests, Map<String, String> messaging, String status) {
         this.ID = ID;
         Uid = uid;
         this.user_name = user_name;
@@ -51,6 +53,7 @@ public class User implements Serializable {
         this.nationality = nationality;
         this.interests = interests;
         this.messaging = messaging;
+        this.status = status;
         isExpanded = false;
     }
 
@@ -140,6 +143,14 @@ public class User implements Serializable {
 
     public void setMessaging(Map<String, String> messaging) {
         this.messaging = messaging;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Exclude

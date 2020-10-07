@@ -7,6 +7,8 @@ import androidx.transition.Fade;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -22,6 +24,8 @@ public class ImageViewerActivity extends AppCompatActivity {
     ImageView large_usr_img;
     Uri uri = null;
     String url = null;
+    private ScaleGestureDetector scaleGestureDetector;
+    private float mScaleFactor = 1.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_image);
 
         large_usr_img = findViewById(R.id.large_usr_img);
+        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
         Fade fade = new Fade();
         View decor = getWindow().getDecorView();
@@ -65,6 +70,23 @@ public class ImageViewerActivity extends AppCompatActivity {
             uri = Uri.parse(getIntent().getStringExtra("uri"));
         else if(getIntent().getStringExtra("url") != null)
             url = getIntent().getStringExtra("url");
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        scaleGestureDetector.onTouchEvent(motionEvent);
+        return true;
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
+            large_usr_img.setScaleX(mScaleFactor);
+            large_usr_img.setScaleY(mScaleFactor);
+            return true;
+        }
     }
 
 }

@@ -136,6 +136,9 @@
         android:layout_marginTop="8dp"
         android:textSize="15sp"
         android:onClick="openLogin"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         />
 
         </RelativeLayout>

@@ -11,7 +11,6 @@
     <color name="colorGreen2">#1DE393</color>
     <color name="colorGreenDark">#28821C</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorWhite3">#F3F3F3</color>
     <color name="colorDark">#101010</color>
     <color name="colorDark2">#202020</color>
     <color name="colorGradient1">#404040</color>
@@ -29,7 +28,8 @@
     <color name="transparent_blue2">#C04285f4</color>
     <color name="colorBlueLight">#16C3DB</color>
     <color name="colorWhite2">#E3E3E3</color>
-
+    <color name="colorWhite3">#F3F3F3</color>
+    <color name="colorWhite4">#F7F7F7</color>
     <color name="purple1">#5113CB</color>
     <color name="purple2">#7164c1</color>
     <color name="pink1">#CF4F98</color>

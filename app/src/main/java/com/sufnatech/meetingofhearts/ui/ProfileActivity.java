@@ -20,12 +20,15 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.sufnatech.meetingofhearts.Authentication.ui.LoginActivity;
 import com.sufnatech.meetingofhearts.Entities.Interest;
 import com.sufnatech.meetingofhearts.Entities.User;
@@ -87,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         getUserData();
 
-        //showAdInterstitial();
+        showAdInterstitial();
     }
 
     private void showAdInterstitial() {
@@ -157,6 +160,8 @@ public class ProfileActivity extends AppCompatActivity {
         new_interests_recycler.setEnabled(false);
         TextView new_interests_txt = findViewById(R.id.new_interests_txt);
         new_interests_txt.setVisibility(View.GONE);
+        RelativeLayout phone_relative = findViewById(R.id.phone_relative);
+        phone_relative.setVisibility(View.GONE);
     }
 
     private void fillViews() {
@@ -165,10 +170,10 @@ public class ProfileActivity extends AppCompatActivity {
         if(!user.getImageUrl().isEmpty())
             Glide.with(getApplicationContext())
                     .load(user.getImageUrl())
-                    .placeholder(R.drawable.ic_user_placeholder)
+                    .placeholder(R.drawable.ic_user_placeholder_blue)
                     .into(user_img);
         else
-            user_img.setImageResource(R.drawable.ic_user_placeholder);
+            user_img.setImageResource(R.drawable.ic_user_placeholder_blue);
 
         user_name.setText(user.getUser_name());
         user_phone.setText(user.getPhone());
@@ -184,6 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void fillUserInterests() {
         if(user.getInterests() != null){
             List<Interest> list = new ArrayList<>();
+            list.clear();
             for (Map.Entry<String, String> entry : user.getInterests().entrySet()) {
                 Interest interest = new Interest(entry.getKey(), entry.getValue(), new HashMap<String, String>());
                 list.add(interest);
@@ -194,6 +200,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void fillNewInterests(){
         List<Interest> suggestedList = new ArrayList<>();
+        suggestedList.clear();
         for(Interest interest : allInterestsList){
             if(interest.getUsers() == null || interest.getUsers().get(user.getID()) == null)
                 suggestedList.add(interest);
@@ -206,6 +213,7 @@ public class ProfileActivity extends AppCompatActivity {
         interestsDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                interestsDb.removeEventListener(this);
                 allInterestsList.clear();
                 for(DataSnapshot snap : snapshot.getChildren())
                     allInterestsList.add(snap.getValue(Interest.class));
@@ -340,19 +348,24 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateUser() {
         DatabaseReference userDb = FirebaseDatabase.getInstance().getReference(User.class.getSimpleName());
         userDb.child(user.getID()).setValue(user).addOnCompleteListener(task -> {
-            profile_progress.setVisibility(View.GONE);
             if(task.isSuccessful()){
                 Toast.makeText(ProfileActivity.this, "Updated Successfully!", Toast.LENGTH_SHORT).show();
-                updateAllInterests();
-                finish();
+                updateAllInterests(0);
             }
         });
     }
 
-    private void updateAllInterests() {
+    private void updateAllInterests(int i) {
+        if(i>allInterestsList.size()-1){
+            profile_progress.setVisibility(View.GONE);
+            finish();
+            return;
+        }
+        Interest interest = allInterestsList.get(i);
         DatabaseReference dbInterests = FirebaseDatabase.getInstance().getReference(Interest.class.getSimpleName());
-        for(Interest interest : allInterestsList)
-            dbInterests.child(interest.getID()).setValue(interest);
+        dbInterests.child(interest.getID()).setValue(interest).addOnCompleteListener(task -> {
+                    updateAllInterests(i+1);
+        });
     }
 
     private void updateUserWithImage() {
@@ -502,7 +515,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(user.getPhone().isEmpty() || user.getGender().isEmpty() || user.getNationality().isEmpty() || user.getAge()==0){
+        if((user.getPhone().isEmpty() || user.getGender().isEmpty() || user.getNationality().isEmpty() || user.getAge()==0) && user.getUid().equals(FirebaseAuth.getInstance().getUid())){
             Toast.makeText(this, "Please, Complete Your Profile!", Toast.LENGTH_SHORT).show();
         }else{
             finish();
@@ -510,19 +523,20 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void SignOut(View view) {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(ProfileActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
-                            startActivity(i);
-                            finish();
-                        }else{
-                            Toast.makeText(ProfileActivity.this, "Error ...! \n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
 
+        user.setStatus("Offline");
+        AuthUI.getInstance()
+                .signOut(ProfileActivity.this)
+                .addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(user.getID());
+                        finishAffinity();
+                        Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
+                        i.putExtra("id", user.getID());
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "Error ...! \n" + task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -534,21 +548,23 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void enlargeImage(View view) {
 
-        Fade fade = new Fade();
-        View decor = getWindow().getDecorView();
-        fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
-        fade.excludeTarget(android.R.id.statusBarBackground, true);
-        fade.excludeTarget(android.R.id.navigationBarBackground, true);
-        Intent i = new Intent(this, ImageViewerActivity.class);
-        ActivityOptionsCompat options = ActivityOptionsCompat
-                .makeSceneTransitionAnimation(ProfileActivity.this, user_img, ViewCompat.getTransitionName(user_img));
+        if(selectedImage != null || !user.getImageUrl().isEmpty()) {
+            Fade fade = new Fade();
+            View decor = getWindow().getDecorView();
+            fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
+            fade.excludeTarget(android.R.id.statusBarBackground, true);
+            fade.excludeTarget(android.R.id.navigationBarBackground, true);
+            Intent i = new Intent(this, ImageViewerActivity.class);
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(ProfileActivity.this, user_img, ViewCompat.getTransitionName(user_img));
 
-        if(selectedImage == null)
-            i.putExtra("url", user.getImageUrl());
-        else
-            i.putExtra("uri", selectedImage.toString());
+            if(selectedImage == null)
+                i.putExtra("url", user.getImageUrl());
+            else
+                i.putExtra("uri", selectedImage.toString());
 
-        startActivity(i, options.toBundle());
+            startActivity(i, options.toBundle());
+        }
     }
 
 

@@ -40,7 +40,7 @@
                     android:layout_height="120dp"
                     android:layout_marginTop="10dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_user_placeholder_gray"
+                    android:src="@drawable/ic_user_placeholder_blue"
                     android:transitionName="user_img_transition"
                     android:layout_centerHorizontal="true"
                     android:onClick="enlargeImage"
@@ -83,6 +83,9 @@
                 android:layout_margin="10dp"
                 android:src="@drawable/ic_edit_blue"
                 android:onClick="editProfile"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_below="@id/line1"
                 android:layout_alignParentEnd="true"/>
             <LinearLayout
@@ -95,6 +98,7 @@
                 android:layout_below="@id/img_edit_profile">
 
                 <RelativeLayout
+                    android:id="@+id/phone_relative"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">

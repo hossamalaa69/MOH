@@ -29,6 +29,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.sufnatech.meetingofhearts.AppExecutors;
 import com.sufnatech.meetingofhearts.Authentication.ui.LoginActivity;
 import com.sufnatech.meetingofhearts.Constants;
 import com.sufnatech.meetingofhearts.Entities.User;
@@ -40,8 +44,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,9 +52,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.startapp.sdk.adsbase.AutoInterstitialPreferences;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.StartAppSDK;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,26 +83,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         checkIfNotLogged();
-        if(!isFinishing()){
+        if (!isFinishing()) {
+            initAds();
             initViews();
             checkUserProfile();
-            //initAds();
             getPermissions();
-            initStartAppAds();
+            checkReceiveNotify();
         }
-    }
-
-    private void initStartAppAds() {
-        StartAppSDK.init(this, getString(R.string.startapp_id), false);
-        StartAppAd.disableSplash();
-        StartAppAd.enableAutoInterstitial();
-        StartAppAd.setAutoInterstitialPreferences(
-                new AutoInterstitialPreferences().setSecondsBetweenAds(120));
     }
 
     private void initAds() {
         MobileAds.initialize(this, initializationStatus -> {
-            //Toast.makeText(MainActivity.this, "Ads Initialized", Toast.LENGTH_SHORT).show();
             showAdInterstitial();
         });
     }
@@ -191,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void checkIfNotLogged() {
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            finishAffinity();
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
             finish();
@@ -204,12 +195,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userRef.orderByChild("uid").equalTo(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userRef.removeEventListener(this);
                 for(DataSnapshot snap : snapshot.getChildren())
                     currentUser = snap.getValue(User.class);
                 if(currentUser.getPhone().isEmpty() || currentUser.getGender().isEmpty() || currentUser.getNationality().isEmpty() || currentUser.getAge()==0){
                     Toast.makeText(MainActivity.this, "Please, Complete Your Profile!", Toast.LENGTH_SHORT).show();
                     openProfile();
                 }else{
+                    setOnline();
+                    setupNotifications();
+                    getSharedPreferences("LoginPref", 0).edit().putString("id", currentUser.getID()).apply();
                     drawerLayout.setVisibility(View.VISIBLE);
                     View headerView = navigationView.getHeaderView(0);
                     TextView navUsername = (TextView) headerView.findViewById(R.id.welcome_user);
@@ -219,6 +214,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private void setOnline() {
+        if((FirebaseAuth.getInstance().getCurrentUser() != null) && (currentUser.getStatus() == null || currentUser.getStatus().isEmpty() || currentUser.getStatus().equals("Offline"))){
+            currentUser.setStatus("Online");
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference(User.class.getSimpleName()+"/"+currentUser.getID()+"/status");
+            db.setValue("Online");
+        }
+    }
+
+    private void checkReceiveNotify() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            String current_user_id = bundle.getString("current_user_id");
+            String guest_user_id = bundle.getString("guest_user_id");
+            long last_date = Long.parseLong(bundle.getString("last_date"));
+            String id = bundle.getString("id");
+
+            Intent i = new Intent(this, ChatActivity.class);
+            i.putExtra("current_user_id", current_user_id);
+            i.putExtra("guest_user_id", guest_user_id);
+            i.putExtra("id", id);
+            i.putExtra("last_date", last_date);
+            startActivity(i);
+        }
+    }
+
+
+    private void setupNotifications() {
+        AppExecutors.getInstance().networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseMessaging.getInstance().subscribeToTopic(currentUser.getID())
+                        .addOnCompleteListener(task -> {
+                            String msg = "Subscribed in notifications successfully";
+                            if (!task.isSuccessful()) {
+                                msg = "Failed Subscribtion in notifications";
+                            }
+                            //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        });
             }
         });
     }
@@ -234,21 +271,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void signOut() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(MainActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
+            currentUser.setStatus("Offline");
+            AuthUI.getInstance()
+                    .signOut(MainActivity.this)
+                    .addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getID());
+                            finishAffinity();
                             Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                            i.putExtra("id", currentUser.getID());
                             startActivity(i);
                             finish();
-                        }else{
-                            Toast.makeText(MainActivity.this, "Error ...! \n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Error ...! \n" + task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
-
-                    }
-                });
+                    });
     }
 
     @Override
@@ -262,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
     }
 
     @Override
@@ -382,4 +419,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         , Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
     }
 
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        finish();
+    }
 }

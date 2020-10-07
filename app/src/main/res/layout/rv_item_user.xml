@@ -77,64 +77,14 @@
                     android:id="@+id/expanded_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorWhite3"
+                    android:background="@color/colorWhite4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginBottom="5dp"
                     >
 
                     <RelativeLayout
-                        android:id="@+id/email_part"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:id="@+id/image_email"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_email_blue"
-                            />
-                        <TextView
-                            android:id="@+id/user_email"
-                            android:layout_centerVertical="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/image_email"
-                            android:text="Email@address.com"
-                            android:textColor="@color/colorDark"
-                            android:textSize="15sp"
-                            android:layout_marginStart="15dp"/>
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/phone_part"
-                        android:layout_marginTop="13dp"
-                        android:layout_below="@id/email_part"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:id="@+id/image_phone"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_phone_blue" />
-
-                        <TextView
-                            android:id="@+id/user_phone"
-                            android:layout_centerVertical="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/image_phone"
-                            android:text="01146513563"
-                            android:textColor="@color/colorDark"
-                            android:textSize="15sp"
-                            android:layout_marginStart="15dp"/>
-                    </RelativeLayout>
-
-                    <RelativeLayout
                         android:id="@+id/orders_part"
-                        android:layout_marginTop="13dp"
-                        android:layout_below="@id/phone_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <ImageView
@@ -149,9 +99,9 @@
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/image_orders"
+                            android:layout_toEndOf="@id/image_orders"
                             android:textColor="@color/colorDark"
-                            android:text="12"
+                            android:text="21 Year"
                             android:textSize="15sp"
                             android:layout_marginStart="15dp"/>
                     </RelativeLayout>
@@ -174,7 +124,7 @@
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/image_nationality"
+                            android:layout_toEndOf ="@id/image_nationality"
                             android:textSize="15sp"
                             android:text="Egypt"
                             android:textColor="@color/colorDark"
@@ -186,15 +136,23 @@
                         android:layout_below="@id/nationality_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/image_age"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_gender_blue"
+                            />
                         <TextView
                             android:id="@+id/user_gender"
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="15sp"
+                            android:layout_toEndOf="@id/image_age"
                             android:text="Male"
                             android:textColor="@color/colorDark"
-                            android:layout_marginStart="5dp"/>
+                            android:layout_marginStart="15dp"/>
                     </RelativeLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -210,6 +168,9 @@
                         android:layout_margin="5dp"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:src="@drawable/ic_chat_blue"
                         android:layout_alignParentEnd="true"/>
                 </RelativeLayout>

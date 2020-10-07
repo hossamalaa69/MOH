@@ -33,7 +33,7 @@ public class MainViewModel extends AndroidViewModel {
                 userList.clear();
                 for(DataSnapshot snap : snapshot.getChildren()){
                     User user = snap.getValue(User.class);
-                    if(!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
+                    if(!user.getUid().equals(FirebaseAuth.getInstance().getUid()) && user.getAge()>0)
                         userList.add(user);
                 }
                 usersMutableLiveData.setValue(userList);
@@ -41,7 +41,7 @@ public class MainViewModel extends AndroidViewModel {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplication(), "Cancelled ..!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplication(), "Cancelled ..!", Toast.LENGTH_SHORT).show();
             }
         });
 

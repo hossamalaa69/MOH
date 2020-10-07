@@ -117,6 +117,9 @@
                 android:layout_below="@id/sign_in_button"
                 android:textColor="@color/colorBlue"
                 android:layout_centerHorizontal="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:textSize="16sp"
                 android:onClick="forgetPassword"
                 />
@@ -130,6 +133,9 @@
                 android:layout_below="@id/forget_password"
                 android:textColor="@color/colorBlue"
                 android:textSize="16sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_centerHorizontal="true"
                 android:onClick="openSignUp"
                 />
