@@ -218,6 +218,7 @@ public class ChatActivity extends AppCompatActivity{
 
 
     private void initViews() {
+        getWindow().setBackgroundDrawableResource(R.drawable.chat_wallpaper) ;
         chat_progress = findViewById(R.id.chat_progress);
         chat_progress.setVisibility(View.VISIBLE);
         empty_chat = findViewById(R.id.empty_chat);
@@ -281,7 +282,6 @@ public class ChatActivity extends AppCompatActivity{
 
     private void initToolbar() {
         TextView textView = getSupportActionBar().getCustomView().findViewById(R.id.guest_name);
-        TextView user_status = getSupportActionBar().getCustomView().findViewById(R.id.user_status);
         CircleImageView circleImageView = getSupportActionBar().getCustomView().findViewById(R.id.guest_img);
         ImageView arrow_back = getSupportActionBar().getCustomView().findViewById(R.id.arrow_back);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(User.class.getSimpleName());
@@ -294,15 +294,8 @@ public class ChatActivity extends AppCompatActivity{
 
                 Glide.with(ChatActivity.this).load(user.getImageUrl()).placeholder(R.drawable.ic_user_placeholder).into(circleImageView);
 
-                String status = user.getStatus();
-                GradientDrawable statusCircle = (GradientDrawable) user_status.getBackground();
-                int color = ContextCompat.getColor(ChatActivity.this, R.color.colorGray4);
-                if(status != null && status.equals("Online"))
-                    color = ContextCompat.getColor(ChatActivity.this, R.color.colorGreen);
-                statusCircle.setColor(color);
-
                 guest_user = user;
-                //databaseReference.removeEventListener(this);
+                databaseReference.removeEventListener(this);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

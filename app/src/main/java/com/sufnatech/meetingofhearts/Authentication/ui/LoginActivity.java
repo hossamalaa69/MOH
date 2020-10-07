@@ -23,6 +23,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.Query;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.sufnatech.meetingofhearts.AppExecutors;
 import com.sufnatech.meetingofhearts.Constants;
 import com.sufnatech.meetingofhearts.Entities.User;
 import com.sufnatech.meetingofhearts.ui.MainActivity;
@@ -64,26 +65,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        checkReceived();
         checkIfLogged();
         initGoogleOptions();
         initViews();
 
-    }
-
-    private void checkReceived() {
-        String id = getIntent().getStringExtra("id");
-        if(id != null) {
-            DatabaseReference db = FirebaseDatabase.getInstance().getReference("User/"+id+"/status");
-            db.setValue("Offline");
-            getSharedPreferences("LoginPref", 0).edit().putString("id", "").apply();
-        }
-    }
-
-    private void getPermissions() {
-        ActivityCompat.requestPermissions(LoginActivity.this
-                , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
-                        , Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
     }
 
     private void checkIfLogged() {
@@ -98,17 +83,14 @@ public class LoginActivity extends AppCompatActivity {
     private void initViews() {
         emailInput = findViewById(R.id.emailInput2);
         inputPassword = findViewById(R.id.inputPassword2);
-        inputPassword.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(LoginActivity.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(inputPassword.getWindowToken(), 0);
-                    checkDataLogin(inputPassword);
-                    return true;
-                }
-                return false;
+        inputPassword.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(LoginActivity.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(inputPassword.getWindowToken(), 0);
+                checkDataLogin(inputPassword);
+                return true;
             }
+            return false;
         });
         signin_progress = findViewById(R.id.signin_progress);
         sign_in_button = findViewById(R.id.sign_in_button);
@@ -250,7 +232,7 @@ public class LoginActivity extends AppCompatActivity {
         signin_progress.setVisibility(View.GONE);
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
-        finish();
+        //finishAffinity();
     }
 
 

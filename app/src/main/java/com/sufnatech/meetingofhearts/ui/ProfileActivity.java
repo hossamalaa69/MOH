@@ -524,15 +524,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void SignOut(View view) {
 
-        user.setStatus("Offline");
         AuthUI.getInstance()
                 .signOut(ProfileActivity.this)
                 .addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()) {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(user.getID());
-                        finishAffinity();
                         Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
-                        i.putExtra("id", user.getID());
                         startActivity(i);
                         finish();
                     } else {

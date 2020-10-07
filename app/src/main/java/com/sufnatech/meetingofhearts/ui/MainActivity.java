@@ -79,12 +79,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initAds();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         checkIfNotLogged();
         if (!isFinishing()) {
-            initAds();
             initViews();
             checkUserProfile();
             getPermissions();
@@ -202,7 +202,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(MainActivity.this, "Please, Complete Your Profile!", Toast.LENGTH_SHORT).show();
                     openProfile();
                 }else{
-                    setOnline();
                     setupNotifications();
                     getSharedPreferences("LoginPref", 0).edit().putString("id", currentUser.getID()).apply();
                     drawerLayout.setVisibility(View.VISIBLE);
@@ -216,14 +215,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-    }
-
-    private void setOnline() {
-        if((FirebaseAuth.getInstance().getCurrentUser() != null) && (currentUser.getStatus() == null || currentUser.getStatus().isEmpty() || currentUser.getStatus().equals("Offline"))){
-            currentUser.setStatus("Online");
-            DatabaseReference db = FirebaseDatabase.getInstance().getReference(User.class.getSimpleName()+"/"+currentUser.getID()+"/status");
-            db.setValue("Online");
-        }
     }
 
     private void checkReceiveNotify() {
@@ -245,19 +236,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void setupNotifications() {
-        AppExecutors.getInstance().networkIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                FirebaseMessaging.getInstance().subscribeToTopic(currentUser.getID())
-                        .addOnCompleteListener(task -> {
-                            String msg = "Subscribed in notifications successfully";
-                            if (!task.isSuccessful()) {
-                                msg = "Failed Subscribtion in notifications";
-                            }
-                            //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                        });
-            }
-        });
+        AppExecutors.getInstance().networkIO().execute(() ->
+                FirebaseMessaging.getInstance().subscribeToTopic(currentUser.getID()).addOnCompleteListener(task -> {
+                }));
     }
 
     public void openProfile() {
@@ -271,15 +252,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void signOut() {
-            currentUser.setStatus("Offline");
             AuthUI.getInstance()
                     .signOut(MainActivity.this)
                     .addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getID());
-                            finishAffinity();
                             Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                            i.putExtra("id", currentUser.getID());
                             startActivity(i);
                             finish();
                         } else {
@@ -421,7 +399,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        finishAffinity();
-        finish();
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }
